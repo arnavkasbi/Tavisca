@@ -1,22 +1,26 @@
 import { combineReducers } from "redux";
 const initialState = {
-    notes : []
+    items : [{fname:"ABC", lname:"PQR", item:2, amount: 250},
+            {fname:"ABC", lname:"PQR", item:2, amount: 250}],
+    currentItem : null
   };
   
-function noteList(state = initialState, action) {
+function itemList(state = initialState, action) {
     switch(action.type){
-        case "SAVE_NOTE": 
-            return {...state, notes:[...state.notes, action.data]} ;
-        case "DELETE_NOTE":
-            return {...state, notes:action.data} ;
-        case "UPDATE_NOTE":
-                return {...state, notes:action.data} ;
+        case "SAVE_ITEM": 
+            return {...state, items:[...state.items, action.data], currentItem : null} ;
+        case "DELETE_ITEM":
+            return {...state, items:action.data} ;
+        case "UPDATE_ITEM":
+            return {...state, items:action.data, currentItem : null} ;
+        case "EDIT_ITEM" :
+            return {...state, currentItem:action.data} ;
         default: 
             return initialState;  
     }
 }
 export default combineReducers({
-    list:noteList
+    list:itemList
 });
 
 

@@ -1,22 +1,28 @@
-export const saveNote = note =>{
+export const saveItem = item =>{
     return {
-        type : "SAVE_NOTE",
-        data : note
+        type : "SAVE_ITEM",
+        data : item
     }    
 }
 
 
-export const deleteNote = list =>{
+export const deleteItem = items =>{
     return {
-        type : "DELETE_NOTE",
-        data : list
+        type : "DELETE_ITEM",
+        data : items
     }    
 }
 
-
-export const updateNote = list =>{
+export const updateItem = items =>{
     return {
-        type : "UPDATE_NOTE",
-        data : list
+        type : "UPDATE_ITEM",
+        data : items
     }    
+}
+
+export const editItem = itemIndex => {
+    return {
+        type : "EDIT_ITEM",
+        data : itemIndex
+    }
 }

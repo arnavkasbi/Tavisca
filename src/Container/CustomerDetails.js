@@ -1,48 +1,47 @@
 import React, {Component} from 'react';
-import FormInput from '../Component/FormInput';
-import Note from '../Component/Note';
-import '../styles/css/Notepage.css';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {saveNote, deleteNote,updateNote} from '../Store/action';
+import {saveItem, updateItem} from '../Store/action';
 
-class Notepage extends Component{
+class CustomerDetails extends Component{
   constructor(props){
     super(props);
     this.state = {
-      noteList : [],
-      noteHeading: "",
-      noteData: "",
+      fname : "",
+      lname : "",
+      item : "",
+      amount : "",
+      formObj: {},
       enablePost:false,
       enableEdit: true,
-      updateIndex : null,
-      inputFields : [
-        { fieldClass:"", class: "row", title: "Title", type:"text", id:"noteHeading", name:"noteHeading", placeholder: "Enter Title", value:"", handleChange: this.handleChange },
-        { fieldClass:"", class: "row", title: "Content", type:"text", id:"noteData", name:"noteData", placeholder: "Enter Content", value:"", handleChange: this.handleChange }   
-      ]
+      updateIndex : null
     };
     
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.currentCustomer !== this.props.currentCustomer && this.props.currentCustomer !== null){
+      let customerList = [...this.props.customers];
+      let currCustomer =  customerList[this.props.currentCustomer];
+      this.setState({  
+        fname:currCustomer.fname, 
+        lname: currCustomer.lname, 
+        item:currCustomer.item, 
+        amount:currCustomer.amount, 
+        formObj:currCustomer
+      });
+    }
+  }
+
   handleChange = (e) => {
-    let target = "";
     try {
-      if(e.target.id === "noteHeading"){
-        target = "noteHeading";
-      } else {
-        target = "noteData";
-      }
-      //if(this.state[target] !== e.target.value){
-        let updateFieldArr = [...this.state.inputFields];
-        updateFieldArr.forEach((val)=>{
-          if(val.id===e.target.id)
-            val.value = e.target.value;
-        });
-        this.setState({ 
-          [target] : e.target.value, 
-          inputFields : updateFieldArr
-        });
-      //}
+      let formObj = {...this.state.formObj } ;
+      formObj[e.target.id] = e.target.value;
+      
+      this.setState({ 
+        [e.target.id] : e.target.value,
+        formObj  
+      });
     } catch (e) {
       console.log(e);
     }
@@ -51,7 +50,8 @@ class Notepage extends Component{
   validateForm = () => {
     let validFlag = true;
     try {
-      if(this.state.noteHeading === "" || this.state.noteData === ""){
+      if(this.state.fname === "" || this.state.lname === "" ||
+        this.state.item === "" || this.state.amount === ""){
         validFlag = false;
       }
       return validFlag;
@@ -65,93 +65,58 @@ class Notepage extends Component{
     this.setState({ enablePost : true });
   }
 
-  savePost = (e) =>{
+  saveDetails = (e) =>{
     e.preventDefault();
     this.setState({ enableEdit : true });
-    let isValid = this.validateForm();
-    if(isValid){
-      
-      let stateCopy = {...this.state};
-      let inputFieldArr = [...this.state.inputFields].map(val=>{
-        val.value = "";
-        return val;
-      });
-      if(stateCopy.updateIndex !== null){
-        let noteListCopy = [...this.props.noteList];
-        noteListCopy[stateCopy.updateIndex] = {header : stateCopy.noteHeading, content: stateCopy.noteData};
-        this.props.updateNote(noteListCopy);
-        this.setState({ updateIndex:null, enablePost : false , noteHeading : "", noteData : "", inputFields:inputFieldArr });
+    if(this.validateForm()){
+      if(this.props.currentCustomer !== null){
+        let customerList = [...this.props.customers];
+        customerList[this.props.currentCustomer] = this.state.formObj;
+        this.props.updateItem(customerList);
+        this.setState({ fname:"", lname: "", item:"", amount:"", formObj:{} });
       } else {
-        this.props.saveNote({header : stateCopy.noteHeading, content: stateCopy.noteData});
-        this.setState({  enablePost : false , noteHeading : "" , noteData : "", inputFields:inputFieldArr });
+        this.props.saveItem(this.state.formObj);
+        this.setState({  fname:"", lname: "", item:"", amount:"", formObj:{} });
       }
      
     }
   };
-
-  editPost = (index) => {
-    let inputFieldArr = [...this.state.inputFields];
-    inputFieldArr[0].value = this.props.noteList[index].header;
-    inputFieldArr[1].value = this.props.noteList[index].content;
-    this.setState({ 
-      updateIndex:index, 
-      enableEdit: false, 
-      enablePost : true, 
-      noteHeading : this.props.noteList[index].header, 
-      noteData : this.props.noteList[index].content,
-      inputFields: inputFieldArr 
-    })
-  }
-
-  deletePost = (index) => {
-    let noteListCopy = [...this.props.noteList];
-    if(index < noteListCopy.length){
-      noteListCopy.splice(index, 1);
-      this.props.deleteNote(noteListCopy);
-    }
-  }
-
+ 
   render(){
+
     return(
-      <div id="noteForm" className="wrapper fadeInDown">
-        <div>
-          <h1>Note Page</h1>
-          <label className="pull-right">Welcome {this.props.username}</label>
-        </div>        
-        <div id="viewport" className="row" style = {{width : "90%"}}>
-        {/* Sidebar */}
-          <div id="sidebar" className="col-md-5" >
-            <Note 
-              noteList = {this.props.noteList} 
-              updatePost={this.editPost} 
-              deletePost={this.deletePost}
-              enableEdit={this.state.enableEdit}
-              >
-            </Note>
-          </div>
-          {/*Content*/ } 
-          <div id="content" className="col-md-7">
-            <div className="container-fluid">
-              <button className="pull-right" onClick={this.enablePost}>Add Note</button>
+      <div>
+        <form className="form-horizontal">
+          <div className="form-group">
+            <label className="control-label col-sm-2">First Name:</label>
+            <div className="col-sm-10">
+              <input onChange={this.handleChange} value={this.state.fname} type="text" className="form-control" id="fname" placeholder="Enter First Name" name="fname"/>
             </div>
-            {this.state.enablePost ? 
-            <div style={{marginTop : "20px"}}>
-              <form>
-                <FormInput 
-                  inputFields = {this.state.inputFields} 
-                  onSubmit={this.savePost} 
-                  submitBtnValue="Save Post"
-                  submitBtnClass="button"
-                ></FormInput>
-              </form>
-            </div> :
-            <div style = {{ visibility : "hidden"}}>
-              <form>
-                <FormInput inputFields = {this.state.inputFields} savePost={this.savePost}></FormInput>
-              </form>
-            </div>}
           </div>
-        </div>
+          <div className="form-group">
+            <label className="control-label col-sm-2">Last Name:</label>
+            <div className="col-sm-10">
+              <input onChange={this.handleChange} value={this.state.lname} type="text" className="form-control" id="lname" placeholder="Enter Last Name" name="lname"/>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="control-label col-sm-2">Purchased Item:</label>
+            <div className="col-sm-10">
+              <input onChange={this.handleChange} value={this.state.item} type="number" className="form-control" id="item" placeholder="Enter Item (Numeric)" name="item"/>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="control-label col-sm-2">Amount:</label>
+            <div className="col-sm-10">
+              <input onChange={this.handleChange} value={this.state.amount} type="number" className="form-control" id="amount" placeholder="Enter Price (Numeric)" name="amount"/>
+            </div>
+          </div>
+          <div className="form-group">        
+            <div className="col-sm-offset-2 col-sm-10">
+              <button onClick={this.saveDetails} type="button" className="btn btn-default">Save</button>
+            </div>
+          </div>
+        </form>
       </div>
     )
   
@@ -160,7 +125,8 @@ class Notepage extends Component{
 
 const mapStateToProps = (state) => {
   return {
-    noteList : state.list.notes
+    customers : state.list.items,
+    currentCustomer : state.list.currentItem
   };
 };
 
@@ -168,10 +134,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      saveNote, deleteNote, updateNote
+      saveItem,  updateItem
     },
     dispatch
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notepage);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerDetails);

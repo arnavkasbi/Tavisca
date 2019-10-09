@@ -37,8 +37,7 @@
 
 .flex-sub-container {
   display: flex;
-  flex-direction: column;
-  background-color: DodgerBlue; }
+  flex-direction: column; }
 
 ​
 .flex-sub-container > div {
@@ -52,8 +51,7 @@
 
 ​
 .flex-li-container {
-  display: flex;
-  background-color: DodgerBlue; }
+  display: flex; }
 
 ​
 .flex-li-container > div {
@@ -61,3 +59,7 @@
   margin: 10px;
   padding: 20px;
   font-size: 15px; }
+
+.purchase-details {
+  margin: 10px;
+  background-color: lavender; }
