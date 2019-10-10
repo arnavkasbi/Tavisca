@@ -9,24 +9,8 @@ class CustomerList extends Component{
   constructor(props){
     super(props);
     this.state = {
-      loginDetails : [
-        { class:"", fieldClass: "fadeIn second", title: "Login", type:"text", id:"login", name:"login", placeholder: "", value:"", handleChange: this.props.handleChange },
-        { class:"", fieldClass: "fadeIn third", title: "Password", type:"password", id:"password", name:"password", placeholder: "", value:"", handleChange: this.props.handleChange }   
-      ]
+      
     };
-  }
-
-  componentDidUpdate(prevProps){
-    if(prevProps.username !== this.props.username){
-      let loginDetails = [...this.state.loginDetails];
-      loginDetails[0].value = this.props.username;
-      this.setState({loginDetails});
-    }
-    if(prevProps.password !== this.props.password){
-      let loginDetails = [...this.state.loginDetails];
-      loginDetails[1].value = this.props.password;
-      this.setState({loginDetails});
-    }
   }
 
   deleteCustomer = itemIndex => {
@@ -46,7 +30,7 @@ class CustomerList extends Component{
     if(this.props.customers.length > 0){
       this.props.customers.forEach((element, index) => {
         row.push(
-          <tr>
+          <tr key={index}>
             <td>{element.fname} {element.lname}</td>
             <td>{element.item}</td>
             <td>{element.amount}</td>
@@ -75,7 +59,6 @@ class CustomerList extends Component{
   };
 
   render(){
-    console.log(this.props.customers);
     return(
       <div className="row">
         <table className="table">

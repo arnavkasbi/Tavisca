@@ -11,10 +11,7 @@ class CustomerDetails extends Component{
       lname : "",
       item : "",
       amount : "",
-      formObj: {},
-      enablePost:false,
-      enableEdit: true,
-      updateIndex : null
+      formObj: {}
     };
     
   }
@@ -61,13 +58,8 @@ class CustomerDetails extends Component{
     }
   }
 
-  enablePost = () => {
-    this.setState({ enablePost : true });
-  }
-
   saveDetails = (e) =>{
     e.preventDefault();
-    this.setState({ enableEdit : true });
     if(this.validateForm()){
       if(this.props.currentCustomer !== null){
         let customerList = [...this.props.customers];
@@ -78,37 +70,35 @@ class CustomerDetails extends Component{
         this.props.saveItem(this.state.formObj);
         this.setState({  fname:"", lname: "", item:"", amount:"", formObj:{} });
       }
-     
     }
   };
  
   render(){
-
     return(
       <div>
         <form className="form-horizontal">
           <div className="form-group">
             <label className="control-label col-sm-2">First Name:</label>
             <div className="col-sm-10">
-              <input onChange={this.handleChange} value={this.state.fname} type="text" className="form-control" id="fname" placeholder="Enter First Name" name="fname"/>
+              <input required onChange={this.handleChange} value={this.state.fname} aria-required="true" aria-label="fname" type="text" className="form-control" id="fname" placeholder="Enter First Name" name="fname"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Last Name:</label>
             <div className="col-sm-10">
-              <input onChange={this.handleChange} value={this.state.lname} type="text" className="form-control" id="lname" placeholder="Enter Last Name" name="lname"/>
+              <input required onChange={this.handleChange} value={this.state.lname} type="text" className="form-control" id="lname" placeholder="Enter Last Name" name="lname"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Purchased Item:</label>
             <div className="col-sm-10">
-              <input onChange={this.handleChange} value={this.state.item} type="number" className="form-control" id="item" placeholder="Enter Item (Numeric)" name="item"/>
+              <input required onChange={this.handleChange} value={this.state.item} type="number" className="form-control" id="item" placeholder="Enter Item (Numeric)" name="item"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Amount:</label>
             <div className="col-sm-10">
-              <input onChange={this.handleChange} value={this.state.amount} type="number" className="form-control" id="amount" placeholder="Enter Price (Numeric)" name="amount"/>
+              <input required onChange={this.handleChange} value={this.state.amount} type="number" className="form-control" id="amount" placeholder="Enter Price (Numeric)" name="amount"/>
             </div>
           </div>
           <div className="form-group">        
