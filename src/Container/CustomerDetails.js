@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {saveItem, updateItem} from '../Store/action';
+import {NotificationManager} from 'react-notifications';
 
 class CustomerDetails extends Component{
   constructor(props){
@@ -46,11 +47,15 @@ class CustomerDetails extends Component{
 
   validateForm = () => {
     let validFlag = true;
+    let formObj = {...this.state.formObj};
     try {
-      if(this.state.fname === "" || this.state.lname === "" ||
-        this.state.item === "" || this.state.amount === ""){
-        validFlag = false;
-      }
+      Object.keys(formObj).forEach(val=>{
+        if(formObj[val] === ""){
+          NotificationManager.error("Enter "+val,null,5000);
+          validFlag = false;
+        }
+      });
+
       return validFlag;
     } catch (e) {
       console.log(e);
@@ -70,6 +75,7 @@ class CustomerDetails extends Component{
         this.props.saveItem(this.state.formObj);
         this.setState({  fname:"", lname: "", item:"", amount:"", formObj:{} });
       }
+      window.location.href="/list";
     }
   };
  
@@ -80,25 +86,25 @@ class CustomerDetails extends Component{
           <div className="form-group">
             <label className="control-label col-sm-2">First Name:</label>
             <div className="col-sm-10">
-              <input required onChange={this.handleChange} value={this.state.fname} aria-required="true" aria-label="fname" type="text" className="form-control" id="fname" placeholder="Enter First Name" name="fname"/>
+              <input onChange={this.handleChange} value={this.state.fname} aria-required="true" aria-label="fname" type="text" className="form-control" id="fname" placeholder="Enter First Name" name="fname"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Last Name:</label>
             <div className="col-sm-10">
-              <input required onChange={this.handleChange} value={this.state.lname} type="text" className="form-control" id="lname" placeholder="Enter Last Name" name="lname"/>
+              <input onChange={this.handleChange} value={this.state.lname} aria-required="true" type="text" className="form-control" id="lname" placeholder="Enter Last Name" name="lname"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Purchased Item:</label>
             <div className="col-sm-10">
-              <input required onChange={this.handleChange} value={this.state.item} type="number" className="form-control" id="item" placeholder="Enter Item (Numeric)" name="item"/>
+              <input onChange={this.handleChange} value={this.state.item} type="number" className="form-control" id="item" placeholder="Enter Item (Numeric)" name="item"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2">Amount:</label>
             <div className="col-sm-10">
-              <input required onChange={this.handleChange} value={this.state.amount} type="number" className="form-control" id="amount" placeholder="Enter Price (Numeric)" name="amount"/>
+              <input onChange={this.handleChange} value={this.state.amount} type="number" className="form-control" id="amount" placeholder="Enter Price (Numeric)" name="amount"/>
             </div>
           </div>
           <div className="form-group">        

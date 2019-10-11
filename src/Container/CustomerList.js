@@ -13,6 +13,9 @@ class CustomerList extends Component{
     };
   }
 
+  componentDidUpdate(prevProps){
+    console.log(prevProps, this.props);
+  }
   deleteCustomer = itemIndex => {
     let customerList = [...this.props.customers];
     if(itemIndex < customerList.length){

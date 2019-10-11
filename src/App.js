@@ -1,9 +1,12 @@
 import React from 'react';
 import "./styles/css/App.css";
 import CustomerList from "./Container/CustomerList";
-import CustomerDetails from "./Container/CustomerDetails";
+//import CustomerDetails from "./Container/CustomerDetails";
 
 function App() {
+  function navigate() {
+    window.location.href="/details";
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -17,10 +20,11 @@ function App() {
             <CustomerList></CustomerList>
           </div>
           
-          <div className="col-sm-4 purchase-details">
+          <button onClick={navigate}>Add Customer</button>
+          {/* <div className="col-sm-4 purchase-details">
             <h1>Edit Customer</h1>
             <CustomerDetails></CustomerDetails>
-          </div>
+          </div> */}
         </div>
       </div>      
     </div>
