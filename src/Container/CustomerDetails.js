@@ -73,9 +73,10 @@ class CustomerDetails extends Component{
         this.setState({ fname:"", lname: "", item:"", amount:"", formObj:{} });
       } else {
         this.props.saveItem(this.state.formObj);
-        this.setState({  fname:"", lname: "", item:"", amount:"", formObj:{} });
-      }
-      window.location.href="/list";
+        this.setState({  fname:"", lname: "", item:"", amount:"", formObj:{} }, ()=>{
+          window.location.href="/list";
+        });
+      }      
     }
   };
  
